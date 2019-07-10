@@ -8,14 +8,24 @@
 
 a = [(30,0),(30,20),(20,20),(20,40),(40,40),(40,30),(60,30),(60,50),(80,50),(80,20),(60,20),(60,0)]
 
+# [ {1}, {2}, {3}, {4}, {5}, {6}, {7}]
 
 
+# c++ struct
+
+
+# import numpy
+
+# from collections import  nametupled
+# Point = nametupled('Point', 'x y'.split(' '))
+# p1 = Point(1,5)
+# p1.x
 
 def valid_coordinats_points(list_of_points, next_x=True, next_y=True):
+
 	for index, point in enumerate(list_of_points):
 
 		if index == len(list_of_points)-1:
-
 			if point[0] == list_of_points[0][0] or point[1] == list_of_points[0][1]:
 				print('last_point is valid')
 				return True
@@ -44,6 +54,57 @@ def polygons_lines(coordinats_of_points):
 	sections = [(point, coordinats_of_points[(len(coordinats_of_points) - (2*len(coordinats_of_points)-num))+1]) \
 	for num, point in enumerate(coordinats_of_points)]
 	return sections
+
+print(polygons_lines(a))
+print("=====")
+
+res = list(zip(a[1:], a[:-1])) + [a[-1], a[0]]
+print(res)
+
+# struct
+# opp
+
+
+# datatype + function
+
+
+
+# struct
+
+class Person:
+	name : str
+	age : int
+	isMarried : bool
+	money : float
+	memory : list
+
+	@staticmethod
+	def hello2():
+		print('yo')
+		return 1
+
+	def hello(self, person):
+		person.memory.apeend(f'Hello from {self.name}')
+
+	def sleep(self):
+		part = self.memory[r1:r2]
+		self.load_uncon(part)
+Person.hello2()
+
+
+# p1 = Person(name='john')
+# p2 = Person(name='john')
+# [Person(...) for i in range(5)]
+
+# p1.p2(person)
+
+
+
+
+
+
+import sys; sys.exit(0)
+
 
 
 
@@ -121,31 +182,32 @@ p1 = [((2,1),(2,5)), ((2,5),(3,5)), ((3,5),(3,1)), ((3,1),(2,1))]
 p2 = [((1,2),(1,4)), ((1,4),(5,4)), ((5,4),(5,2)), ((5,2),(1,2))]
 
 
-def gates(list_indexes_intersections_lines, lines_polygon_one, lines_polygon_two):
-	# определить точные условия для поиска
-	for index_of_item, item_in_indexes_list in enumerate(list_indexes_intersections_lines):
+# def gates(list_indexes_intersections_lines, lines_polygon_one, lines_polygon_two):
+# 	# определить точные условия для поиска
+# 	for index_of_item, item_in_indexes_list in enumerate(list_indexes_intersections_lines):
 
-		line_one = lines_polygon_one[item_in_indexes_list[0]] # line from polygon_one
-		crossed_lines_the_line = item_in_indexes_list[1]
+# 		line_one = lines_polygon_one[item_in_indexes_list[0]] # line from polygon_one
+# 		crossed_lines_the_line = item_in_indexes_list[1]
 
 
-		for index_of_ather_item in range(index_of_item+1, len(list_indexes_intersections_lines)):
+# 		for index_of_ather_item in range(index_of_item+1, len(list_indexes_intersections_lines)):
 
-			ather_line = lines_polygon_one[index_of_ather_item[0]] # line from polygon_two
-			crossed_lines_ather_line = list_indexes_intersections_lines[index_of_ather_item][1]
-			results = [for line in crossed_lines_ather_line if line in crossed_lines_the_line]
-			if len(results) >= 2:
-				if line_one[0][0] == line_one[1][0]:
-					const_line_one = line_one[0][0]
-				else:
-					const_line_one = line_one[0][1]
+# 			ather_line = lines_polygon_one[index_of_ather_item[0]] # line from polygon_two
+# 			crossed_lines_ather_line = list_indexes_intersections_lines[index_of_ather_item][1]
+# 			results = [for line in crossed_lines_ather_line if line in crossed_lines_the_line]
 
-				if ather_line[0][0] == ather_line[1][0]:
-					const_ather_line = ather_line[0][0]
-				else:
-					const_ather_line = ather_line[0][1]
+# 			if len(results) >= 2:
+# 				if line_one[0][0] == line_one[1][0]:
+# 					const_line_one = line_one[0][0]
+# 				else:
+# 					const_line_one = line_one[0][1]
 
-				size_of_gate = max(const_line_one, const_ather_line) - min(const_line_one, const_ather_line)
+# 				if ather_line[0][0] == ather_line[1][0]:
+# 					const_ather_line = ather_line[0][0]
+# 				else:
+# 					const_ather_line = ather_line[0][1]
+
+# 				size_of_gate = max(const_line_one, const_ather_line) - min(const_line_one, const_ather_line)
 
 
 			# а если линий будет больше ????
