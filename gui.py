@@ -51,10 +51,10 @@ def compair_values(saved_values, values):
 	if saved_values[0] != int(values[0]):
 
 		_left   = values[0]
-		_right  = saved_values[1] + _left
+		_width  = saved_values[4]
+		_right  = _width + _left
 		_top    = saved_values[2]
 		_bottom = saved_values[3]
-		_width  = saved_values[4]
 		_height = saved_values[5]
 
 
