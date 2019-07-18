@@ -8,7 +8,7 @@ Point = namedtuple('Point', 'x y')
 Line = namedtuple('Line','first_point second_point')
 
 FIELD = (640, 480)
-MIN_GATE_SIZE = 0
+MIN_GATE_SIZE = 10
 MAX_GATE_SIZE = 1000
 PB1 = [(100,350),(100,200),(75,200),(75,150),(100,150),(100,50),(150,50),(150,200),(200,200),(200,125),(250,125),(250,300),(225,300),(225,250),(175,250), (175,350)]
 PT1 = [(150,325),(150,265),(275,265),(275,100),(175,100),(175,125),(50,125),(50,75),(300,75),(300,325)]
@@ -244,11 +244,13 @@ def check_vectior_intersection(point, oposits_lines_bt_poly, max_x=FIELD[0], max
 		vector_to_left  = Line(Point(point.x, point.y),Point(0, point.y))
 		vector_to_right = Line(Point(point.x, point.y),Point(max_x, point.y))
 		res = list(map(intersection_of_polygons_lines(top_lines=[x], bottom_lines=oposits_lines_bt_poly, point=False), [vectopr_to_left, vectopr_to_right]))
-	if all(item==None for item in res):
+		
+	return not all(item==None for item in res)
 
-		return False
-	else:
-		return True
+	# if all(item==None for item in res):
+	# 	return False
+	# else:
+	# 	return True
 
 
 
@@ -348,7 +350,10 @@ def draw(list_of_pairs_of_polygons):
 				pic_draw.polygon(pair[1], outline='green')
 			if gatess:
 				for gate in gatess:
-					pic_draw.line((gate[0].x,gate[0].y,gate[1].x, gate[1].y), fill=128, width=3)
+					gate_size = np.array(gate)
+					gate_size = abs(gate_size[0,0]-gate_size[1,0] + gate_size[0,1]-gate_size[1,1])
+					if MIN_GATE_SIZE <= gate_size <= MAX_GATE_SIZE:
+						pic_draw.line((gate[0].x,gate[0].y,gate[1].x, gate[1].y), fill=128, width=3)
 
 			image.show()
 

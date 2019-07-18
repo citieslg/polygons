@@ -1,78 +1,149 @@
 import PySimpleGUI as sg
-kef = 20
 
-RED_POLYGON = '''(9.49 6.65) (9.49 4.975) (12.845 4.975) (12.845 -5.65) (10.11 -5.65) (10.11 -5.665) (6.065 -5.665) (6.065 -3.26) (2.385 -3.26) (2.385 1.075) (4.79 1.075) (4.79 6.65)'''
+# RED_POLYGON = '''(9.49 6.65) (9.49 4.975) (12.845 4.975) (12.845 -5.65) (10.11 -5.65) (10.11 -5.665) (6.065 -5.665) (6.065 -3.26) (2.385 -3.26) (2.385 1.075) (4.79 1.075) (4.79 6.65)'''
+FIELD = (640,480)
 
 
-list_of_square = ['polygon_1', 'polygon_2']
+list_of_square = ['active draw mod']
 
 layout = [
 			[sg.Combo(list_of_square)],
-			[sg.Text('Left    '), sg.Spin([-2,-1,0,1,2] , initial_value=1, size=(5,1), key='left')
+			[sg.Text('Left    '), sg.Spin(list(range(-20,620,5)) , initial_value=0, size=(5,1), key='left')
 			,sg.Text(' '*70)
-			,sg.Text('Bottom'), sg.Spin([-2,-1,0,1,2], initial_value=1, size=(5,1), key='bottom')],
-			[sg.Text('Right  '), sg.Spin([-2,-1,0,1,2], initial_value=1, size=(5,1), key='right')
+			,sg.Text('Bottom'), sg.Spin(list(range(-240,235,5)), initial_value=0, size=(5,1), key='bottom')],
+			[sg.Text('Right  '), sg.Spin(list(range(-15,620,5)), initial_value=0, size=(5,1), key='right')
 			,sg.Text(' '*70)
-			,sg.Text('Top     '), sg.Spin([-2,-1,0,1,2], initial_value=1, size=(5,1),key='top')],
-			[sg.Text('Width '), sg.Spin([-2,-1,0,1,2], initial_value=1, size=(5,1), key='width')
+			,sg.Text('Top     '), sg.Spin(list(range(-20,620,5)), initial_value=0, size=(5,1),key='top')],
+			[sg.Text('Width '), sg.Spin(list(range(0,640,5)), initial_value=0, size=(5,1), key='width')
 			,sg.Text(' '*70)
-			,sg.Text('Height '), sg.Spin([-2,-1,0,1,2], initial_value=1, size=(5,1),key='height')],
-			[sg.Graph(key='g', canvas_size=(640,480), graph_bottom_left=(-20, -480/2), graph_top_right=(640/2-20, 480/2))]
+			,sg.Text('Height '), sg.Spin(list(range(0,480,5)), initial_value=0, size=(5,1),key='height')],
+			[sg.Graph( FIELD, (-20,-240),(620,240),key='g')]
 ]
-def draw_red_polygon(points):
-	points = points.split(') (')
-	points[0] = points[0].strip('(')
-	points[-1] = points[-1].strip(')')
-	correct_points = []
-	for item in points:
-		x,y = item.split(' ')
-		x,y = round(float(x)*kef, 3),round(float(y)*kef,3)
-		correct_points.append((x,y))
 
-
-	last_line = correct_points[-1],correct_points[0]
-	lines = list(zip(correct_points[0:-1], correct_points[1:]))
-	lines.append(last_line)
-
-	return [graph.DrawLine((line[0]), (line[1]), color='red', width=1) for line in lines]
-
-
-def draw_rectangles(_topleft=(1.5*kef, 2.3*kef), _bottomright=(8.5*kef, -1.2*kef)):
-	return graph.DrawRectangle(top_left=_topleft, bottom_right=_bottomright, line_color='yellow')
+	
 
 
 
 window = sg.Window('Polygon_games').Layout(layout)
-# 1 way : vs code -> breakpoint, step by step
-# 2 way : import pdb; pdb.set_trace();
+graph  = window.FindElement('g')
+left   = window.FindElement('left')
+right  = window.FindElement('right')
+top    = window.FindElement('top')
+bottom = window.FindElement('bottom')
+width  = window.FindElement('width')
+height = window.FindElement('height')
+
+def background():
+	graph.DrawRectangle((-20,-240),(620,240), fill_color='black', line_color='black')
+	graph.DrawLine((-20,0),(620,0), color='white', width=.3)
+	graph.DrawLine((0,-240),(0,240), color='white', width=.3)
+
+def rectangle(bottom_left, top_right):
+	graph.DrawRectangle(bottom_left, top_right, fill_color='yellow', line_color='yellow')
+	return (bottom_left[0],top_right[0], top_right[1],bottom_left[1],top_right[0]-bottom_left[0], top_right[1]-bottom_left[1])
 
 
-import math
-graph = window.FindElement('g')
-index=0
+
+
+	return [_left, _right, _top, _bottom, _width, _height]
+
+def compair_values(saved_values, values):
+	if saved_values[0] != int(values[0]):
+
+		_left   = values[0]
+		_right  = saved_values[1] + _left
+		_top    = saved_values[2]
+		_bottom = saved_values[3]
+		_width  = saved_values[4]
+		_height = saved_values[5]
+
+
+	elif saved_values[1] != values[1]:
+
+		_right  = values[1]
+		_width  = saved_values[4]
+		_left   = _right - _width
+		_top    = saved_values[2]
+		_bottom = saved_values[3]
+		_height = saved_values[5]
+
+
+	elif saved_values[2] != values[2]:
+		_left   = saved_values[0]
+		_right  = saved_values[1]
+		_top    = values[2]
+		_height = saved_values[5]
+		_bottom = _top - _height
+		_width  = saved_values[4]
+
+
+	elif saved_values[3] != values[3]:
+		_left   = saved_values[0]
+		_right  = saved_values[1]
+		_bottom = values[3]
+		_height = _values[5]
+		_top    = _bottom + _height
+		_width  = _values[4]
+
+
+	elif saved_values[4] != values[4]:
+
+		_width  = values[4]
+		_left   = saved_values[0]
+		_right  = _left + _width
+		_top    = saved_values[2]
+		_bottom = saved_values[3]
+		_height = saved_values[5]
+
+
+	elif saved_values[5] != values[5]:
+
+		_height = values[5]
+		_left   = saved_values[0]
+		_right  = saved_values[1]
+		_bottom = saved_values[3]
+		_top    = _bottom + _height
+		_width  = saved_values[4]
+
+
+	else:
+		
+		_left   = saved_values[0]
+		_right  = saved_values[1]
+		_top    = saved_values[2]
+		_bottom = saved_values[3]
+		_width  = saved_values[4]
+		_height = saved_values[5]
+
+	left.Update(value=_left)
+	right.Update(value=_right)
+	top.Update(value=_top)
+	bottom.Update(value=_bottom)
+	width.Update(value=_width)
+	height.Update(value=_height)
+
+	bottom_left = (_left, _bottom)
+	top_right = (_right, _top)
+
+	return bottom_left, top_right
+
+
+
+saved_values = rectangle((0,0),(150,100))
+
 while True:
-	index+=1
+
 	
 
 	button, values = window.Read(timeout=50)
 	if button is None or button == 'Exit': break
+	background()
+	_values = [int(values['left']), int(values['right']), int(values['top']), int(values['bottom']), int(values['width']), int(values['height'])]
 
-
-	graph.DrawRectangle((-20, -480/2), (640/2-20, 480/2), fill_color='black')
-	# line = 0,0  ,  50, math.sin(index/10)*50
-	# graph.DrawLine(line[:2], line[2:], color='red', width=3)
-	line = 0,0  ,  150,150
-	x_line = -20,0  ,  640/2-20, 0
-	y_line = 0, -480/2  ,  0, 480/2
-	graph.DrawLine(x_line[:2], x_line[2:], color='white', width=1)
-	graph.DrawLine(y_line[:2], y_line[2:], color='white', width=1)
-	graph.DrawCircle((0, 100), 5, fill_color='green')
-	draw_red_polygon(RED_POLYGON)
-	draw_rectangles()
-	# p1,p2,p3 = int(values['p1']), int(values['p2']), int(values['p3'])
+	b_l, t_r = compair_values(saved_values=saved_values, values=_values)
+	saved_values = rectangle(bottom_left=b_l,top_right=t_r)
 
 
 window.Close()
-
 
 
